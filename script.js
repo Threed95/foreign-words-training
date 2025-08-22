@@ -17,11 +17,14 @@ const spanCardBack = document.querySelector("#card-back span");
 const nextButton = document.querySelector("#next");
 const backButton = document.querySelector("#back");
 
+const currentWord = document.querySelector("#current-word");
+
 function displayCard(index) {
     if (arrWords[index]) {
         titleCard.textContent = arrWords[index].english;
         cardBackTitle.textContent = arrWords[index].translation;
         spanCardBack.textContent = arrWords[index].example;
+        currentWord.textContent = currentCardIndex + 1;
     }
 }
 
@@ -49,6 +52,6 @@ backButton.addEventListener("click", () => {
 displayCard(currentCardIndex);
 
 flipCard.addEventListener("click", function() {
-    flipCard.classList.add("active");
+    flipCard.classList.toggle("active");
 
 })
