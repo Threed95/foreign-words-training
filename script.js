@@ -25,10 +25,16 @@ function displayCard(index) {
     }
 }
 
+function changeButton() {
+    backButton.disabled = currentCardIndex === 0;
+    nextButton.disabled = currentCardIndex === arrWords.length - 1;
+}
+
 nextButton.addEventListener("click", () => {
     if (currentCardIndex < arrWords.length - 1) {
         currentCardIndex++;
         displayCard(currentCardIndex);
+        changeButton();
     }
 })
 
@@ -36,6 +42,7 @@ backButton.addEventListener("click", () => {
     if (currentCardIndex > 0) {
         currentCardIndex--;
         displayCard(currentCardIndex);
+        changeButton();
     }
 })
 
