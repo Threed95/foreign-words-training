@@ -6,6 +6,21 @@ const arrWords = [
     { english: "watermelon", translation: "арбуз", example: "This watermelon is very tasty." }
 ]
 
+
+const words = arrWords.map(item => item.english);
+const translations = arrWords.map(item => item.translation);
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j] = array[j], array[i]];
+    }
+    return array;
+}
+
+const shuffleWords = shuffleArray(words);
+const shuffleTranslate = shuffleArray(translations);
+
 let currentCardIndex = 0;
 
 
@@ -18,6 +33,12 @@ const nextButton = document.querySelector("#next");
 const backButton = document.querySelector("#back");
 
 const currentWord = document.querySelector("#current-word");
+
+const examination = document.querySelector("#exam");
+
+const examCards = document.querySelector("#exam-cards");
+
+const content = document.querySelector(".content");
 
 function displayCard(index) {
     if (arrWords[index]) {
@@ -53,5 +74,11 @@ displayCard(currentCardIndex);
 
 flipCard.addEventListener("click", function() {
     flipCard.classList.toggle("active");
+
+})
+
+examination.addEventListener("click", () => {
+    content.innerHTML = '';
+
 
 })
