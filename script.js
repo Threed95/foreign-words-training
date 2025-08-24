@@ -7,19 +7,6 @@ const arrWords = [
 ]
 
 
-const words = arrWords.map(item => item.english);
-const translations = arrWords.map(item => item.translation);
-
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j] = array[j], array[i]];
-    }
-    return array;
-}
-
-const shuffleWords = shuffleArray(words);
-const shuffleTranslate = shuffleArray(translations);
 
 let currentCardIndex = 0;
 
@@ -39,6 +26,10 @@ const examination = document.querySelector("#exam");
 const examCards = document.querySelector("#exam-cards");
 
 const content = document.querySelector(".content");
+
+const container = document.querySelector(".container");
+
+const studyCards = document.querySelector(".study-cards");
 
 function displayCard(index) {
     if (arrWords[index]) {
@@ -77,8 +68,34 @@ flipCard.addEventListener("click", function() {
 
 })
 
+const words = arrWords.map(item => item.english);
+const translations = arrWords.map(item => item.translation);
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j] = array[j], array[i]];
+    }
+    return array;
+}
+
+const shuffleWords = shuffleArray(words);
+const shuffleTranslate = shuffleArray(translations);
+
+
 examination.addEventListener("click", () => {
-    content.innerHTML = '';
+    studyCards.innerHTML = '';
+    shuffleWords.forEach(item => {
+        const wordCard = document.createElement('div');
+        wordCard.classList.add('card');
+        wordCard.textContent = item;
+        examCards.appendChild(wordCard);
+    })
 
-
+    shuffleTranslate.forEach(item => {
+        const translationCard = document.createElement('div');
+        translationCard.classList.add('card');
+        translationCard.textContent = item;
+        examCards.appendChild(translationCard);
+    })
 })
