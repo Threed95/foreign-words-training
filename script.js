@@ -68,8 +68,11 @@ flipCard.addEventListener("click", function() {
 
 })
 
-const words = arrWords.map(item => item.english);
-const translations = arrWords.map(item => item.translation);
+
+let newWords = [];
+let arrTranslation = [];
+let selectedCards = [];
+let matchPairs = 0;
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -79,23 +82,77 @@ function shuffleArray(array) {
     return array;
 }
 
-const shuffleWords = shuffleArray(words);
-const shuffleTranslate = shuffleArray(translations);
+arrWords.forEach(item => {
+    newWords.push({ value: item.english, type: 'word', id: item.english + item.translation });
+    arrTranslation.push({ value: item.translation, type: 'translation', id: item.english + item.translation });
+});
+const shuffleWords = shuffleArray(newWords);
+const shuffleTranslation = shuffleArray(arrTranslation);
 
 
 examination.addEventListener("click", () => {
     studyCards.innerHTML = '';
-    shuffleWords.forEach(item => {
+    shuffleWords.forEach(card => {
         const wordCard = document.createElement('div');
         wordCard.classList.add('card');
-        wordCard.textContent = item;
+        wordCard.textContent = card.value;
+        wordCard.dataset.type = card.type;
+        wordCard.dataset.id = card.id;
         examCards.appendChild(wordCard);
     })
 
-    shuffleTranslate.forEach(item => {
+    shuffleTranslation.forEach(card => {
         const translationCard = document.createElement('div');
         translationCard.classList.add('card');
-        translationCard.textContent = item;
+        translationCard.textContent = card.value;
+        translationCard.dataset.type = card.type;
+        translationCard.dataset.id = card.id;
         examCards.appendChild(translationCard);
     })
+
+
+});
+
+examCards.addEventListener("click", (event) => {
+    let firstCard = false;
+    const clickedCard = event.target;
+    if (firstCard || clickedCard.classList.contains('correct')) {
+        return
+    }
+
+    clickedCard.classList.add('correct');
+    firstCard = true;
+    clickedCard.classList.add('active');
+    selectedCards.push(clickedCard);
+
+    if (selectedCards.length === 2) {
+        const [card1, card2] = selectedCards;
+
+        if (card1.dataset.id === card2.dataset.id && card1.dataset.type !== card2.dataset.type) {
+            card1.classList.add('fade-out');
+            card2.classList.add('fade-out');
+            matchPairs++;
+            selectedCards = [];
+
+            if (matchPairs === arrWords.length) {
+                alert('Вы выйграли!')
+            }
+        } else {
+            card2.classList.add('wrong');
+            setTimeout(() => {
+                card2.classList.remove('wrong');
+            }, 1000);
+            setTimeout(() => {
+                card1.classList.remove('active');
+                card2.classList.remove('active');
+                card1.classList.remove('correct');
+                card2.classList.remove('correct');
+            }, 500);
+            selectedCards = [];
+
+
+
+
+        }
+    }
 })
