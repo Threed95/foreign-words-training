@@ -48,6 +48,8 @@ function displayCard(index) {
         cardBackTitle.textContent = arrWords[index].translation;
         spanCardBack.textContent = arrWords[index].example;
         currentWord.textContent = currentCardIndex + 1;
+        const currentWordData = JSON.stringify(arrWords[index]);
+        localStorage.setItem('currentViewedWord', currentWordData);
         updateWordsProgress()
         updateCurrentWord();
     }
@@ -82,9 +84,16 @@ flipCard.addEventListener("click", function() {
 
 })
 
+function saveShuffleArray(arr) {
+    localStorage.setItem('shuffledCards', JSON.stringify(arr));
+
+}
+
+
 function shuffleCards() {
     arrWords.sort(() => Math.random() - 0.5);
     displayCard(currentCardIndex);
+    saveShuffleArray(arrWords);
 }
 
 
@@ -143,6 +152,7 @@ const shuffleTranslation = shuffleArray(arrTranslation);
 examination.addEventListener("click", testingCard);
 
 const buttonShuffle = document.querySelector("#shuffle-words");
+
 
 buttonShuffle.addEventListener("click", shuffleCards);
 
