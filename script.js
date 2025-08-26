@@ -156,3 +156,12 @@ examCards.addEventListener("click", (event) => {
         }
     }
 })
+
+function shuffleCards() {
+    arrWords.sort(() => Math.random() - 0.5);
+    displayCard(currentCardIndex);
+}
+
+const buttonShuffle = document.querySelector("#shuffle-words");
+
+buttonShuffle.addEventListener("click", shuffleCards);
