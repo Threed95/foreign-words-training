@@ -139,6 +139,7 @@ function testingCard() {
         translationCard.dataset.id = card.id;
         examCards.appendChild(translationCard);
     })
+
 }
 
 arrWords.forEach(item => {
@@ -183,6 +184,8 @@ function stopTimer() {
 
 
 examCards.addEventListener("click", (event) => {
+    let correctCount = JSON.parse(localStorage.getItem('correctCardChoose')) || 0;
+    let wrongCount = JSON.parse(localStorage.getItem('wrongCardChoose')) || 0;
     startTimer();
     let firstCard = false;
     const clickedCard = event.target;
@@ -200,6 +203,8 @@ examCards.addEventListener("click", (event) => {
             card1.classList.add('fade-out');
             card2.classList.add('fade-out');
             matchPairs++;
+            correctCount++;
+            localStorage.setItem('correctCardChoose', JSON.stringify(correctCount));
             correctPercent.textContent = `${matchPairs}`;
             updateProgress();
             selectedCards = [];
@@ -210,6 +215,8 @@ examCards.addEventListener("click", (event) => {
 
         } else {
             card2.classList.add('wrong');
+            wrongCount++;
+            localStorage.setItem('wrongCardChoose', JSON.stringify(wrongCount));
             setTimeout(() => {
                 card2.classList.remove('wrong');
             }, 1000);
