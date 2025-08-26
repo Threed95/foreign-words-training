@@ -6,39 +6,39 @@ const arrWords = [
     { english: "watermelon", translation: "арбуз", example: "This watermelon is very tasty." }
 ]
 
-
-
 let currentCardIndex = 0;
-
 
 const flipCard = document.querySelector(".flip-card");
 const titleCard = document.querySelector("#card-front h1");
 const cardBackTitle = document.querySelector("#card-back h1");
 const spanCardBack = document.querySelector("#card-back span");
-
 const nextButton = document.querySelector("#next");
 const backButton = document.querySelector("#back");
-
 const currentWord = document.querySelector("#current-word");
-
 const examination = document.querySelector("#exam");
-
 const examCards = document.querySelector("#exam-cards");
-
 const content = document.querySelector(".content");
-
 const container = document.querySelector(".container");
-
 const studyCards = document.querySelector(".study-cards");
 const wordsProgress = document.querySelector("#words-progress");
+const examMode = document.querySelector("#exam-mode");
+const correctPercent = document.querySelector("#correct-percent");
+const examProgress = document.querySelector("#exam-progress");
+const studyMode = document.querySelector("#study-mode");
 
 let viewedWords = 1;
+const totalWords = arrWords.length;
 
 function updateWordsProgress() {
-    const totalWords = arrWords.length;
     const percentWords = (viewedWords / totalWords) * 100;
     wordsProgress.textContent = `${Math.round(percentWords)}%`;
 
+}
+
+function updateCurrentWord() {
+    const percentViewedWords = (viewedWords / arrWords.length) * 100;
+    wordsProgress.value = percentViewedWords;
+    wordsProgress.textContent = percentViewedWords + "%";
 }
 
 function displayCard(index) {
@@ -48,6 +48,7 @@ function displayCard(index) {
         spanCardBack.textContent = arrWords[index].example;
         currentWord.textContent = currentCardIndex + 1;
         updateWordsProgress()
+        updateCurrentWord();
     }
 }
 
@@ -80,11 +81,17 @@ flipCard.addEventListener("click", function() {
 
 })
 
+function shuffleCards() {
+    arrWords.sort(() => Math.random() - 0.5);
+    displayCard(currentCardIndex);
+}
+
 
 let newWords = [];
 let arrTranslation = [];
 let selectedCards = [];
 let matchPairs = 0;
+let correctAnswer = 0;
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -94,16 +101,17 @@ function shuffleArray(array) {
     return array;
 }
 
-arrWords.forEach(item => {
-    newWords.push({ value: item.english, type: 'word', id: item.english + item.translation });
-    arrTranslation.push({ value: item.translation, type: 'translation', id: item.english + item.translation });
-});
-const shuffleWords = shuffleArray(newWords);
-const shuffleTranslation = shuffleArray(arrTranslation);
+function updateProgress() {
+    const percentAnswer = (matchPairs / totalWords) * 100;
+    correctPercent.textContent = `${percentAnswer.toFixed(0)}%`;
+    examProgress.value = percentAnswer;
+    examProgress.textContent = percentAnswer + "%";
+}
 
-
-examination.addEventListener("click", () => {
+function testingCard() {
     studyCards.innerHTML = '';
+    examMode.classList.remove('hidden');
+    studyMode.classList.add('hidden');
     shuffleWords.forEach(card => {
         const wordCard = document.createElement('div');
         wordCard.classList.add('card');
@@ -121,14 +129,26 @@ examination.addEventListener("click", () => {
         translationCard.dataset.id = card.id;
         examCards.appendChild(translationCard);
     })
+}
 
 
+arrWords.forEach(item => {
+    newWords.push({ value: item.english, type: 'word', id: item.english + item.translation });
+    arrTranslation.push({ value: item.translation, type: 'translation', id: item.english + item.translation });
 });
+
+const shuffleWords = shuffleArray(newWords);
+const shuffleTranslation = shuffleArray(arrTranslation);
+
+examination.addEventListener("click", testingCard);
+
+
 
 examCards.addEventListener("click", (event) => {
     let firstCard = false;
     const clickedCard = event.target;
     startTimer();
+
 
     if (firstCard || clickedCard.classList.contains('correct')) {
         return
@@ -146,10 +166,12 @@ examCards.addEventListener("click", (event) => {
             card1.classList.add('fade-out');
             card2.classList.add('fade-out');
             matchPairs++;
+            correctPercent.textContent = `${matchPairs}`;
+            updateProgress();
             selectedCards = [];
 
             if (matchPairs === arrWords.length) {
-                alert('Вы выйграли!')
+                alert('Вы выйграли!');
                 stopTimer();
             }
         } else {
@@ -168,17 +190,13 @@ examCards.addEventListener("click", (event) => {
     }
 })
 
-function shuffleCards() {
-    arrWords.sort(() => Math.random() - 0.5);
-    displayCard(currentCardIndex);
-}
+
 
 const buttonShuffle = document.querySelector("#shuffle-words");
 
 buttonShuffle.addEventListener("click", shuffleCards);
 
 const timer = document.querySelector("#time");
-const examMode = document.querySelector("#exam-mode");
 
 let seconds = 0;
 let minutes = 0;
@@ -196,7 +214,7 @@ function updateTimer() {
     }
     const formateSeconds = String(seconds).padStart(2, '0');
     const formatMinutes = String(minutes).padStart(2, '0');
-    examMode.classList.remove('hidden');
+
 
     timer.textContent = `${formatMinutes} : ${formateSeconds}`;
 }
@@ -204,6 +222,3 @@ function updateTimer() {
 function stopTimer() {
     clearInterval(timerInterval);
 }
-
-
-// - Отображение процента просмотренных слов в режиме тренировки (внутри `#study-mode` элемент `#words-progress`)//
