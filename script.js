@@ -30,6 +30,16 @@ const content = document.querySelector(".content");
 const container = document.querySelector(".container");
 
 const studyCards = document.querySelector(".study-cards");
+const wordsProgress = document.querySelector("#words-progress");
+
+let viewedWords = 1;
+
+function updateWordsProgress() {
+    const totalWords = arrWords.length;
+    const percentWords = (viewedWords / totalWords) * 100;
+    wordsProgress.textContent = `${Math.round(percentWords)}%`;
+
+}
 
 function displayCard(index) {
     if (arrWords[index]) {
@@ -37,6 +47,7 @@ function displayCard(index) {
         cardBackTitle.textContent = arrWords[index].translation;
         spanCardBack.textContent = arrWords[index].example;
         currentWord.textContent = currentCardIndex + 1;
+        updateWordsProgress()
     }
 }
 
@@ -48,6 +59,7 @@ function changeButton() {
 nextButton.addEventListener("click", () => {
     if (currentCardIndex < arrWords.length - 1) {
         currentCardIndex++;
+        viewedWords++;
         displayCard(currentCardIndex);
         changeButton();
     }
@@ -116,6 +128,8 @@ examination.addEventListener("click", () => {
 examCards.addEventListener("click", (event) => {
     let firstCard = false;
     const clickedCard = event.target;
+    startTimer();
+
     if (firstCard || clickedCard.classList.contains('correct')) {
         return
     }
@@ -136,6 +150,7 @@ examCards.addEventListener("click", (event) => {
 
             if (matchPairs === arrWords.length) {
                 alert('Вы выйграли!')
+                stopTimer();
             }
         } else {
             card2.classList.add('wrong');
@@ -149,10 +164,6 @@ examCards.addEventListener("click", (event) => {
                 card2.classList.remove('correct');
             }, 500);
             selectedCards = [];
-
-
-
-
         }
     }
 })
@@ -165,3 +176,34 @@ function shuffleCards() {
 const buttonShuffle = document.querySelector("#shuffle-words");
 
 buttonShuffle.addEventListener("click", shuffleCards);
+
+const timer = document.querySelector("#time");
+const examMode = document.querySelector("#exam-mode");
+
+let seconds = 0;
+let minutes = 0;
+let timerInterval;
+
+function startTimer() {
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function updateTimer() {
+    seconds++;
+    if (seconds === 60) {
+        seconds = 0;
+        minutes++;
+    }
+    const formateSeconds = String(seconds).padStart(2, '0');
+    const formatMinutes = String(minutes).padStart(2, '0');
+    examMode.classList.remove('hidden');
+
+    timer.textContent = `${formatMinutes} : ${formateSeconds}`;
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+}
+
+
+// - Отображение процента просмотренных слов в режиме тренировки (внутри `#study-mode` элемент `#words-progress`)//
