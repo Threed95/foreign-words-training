@@ -25,6 +25,7 @@ const examMode = document.querySelector("#exam-mode");
 const correctPercent = document.querySelector("#correct-percent");
 const examProgress = document.querySelector("#exam-progress");
 const studyMode = document.querySelector("#study-mode");
+const resultsModal = document.querySelector(".results-modal");
 
 let viewedWords = 1;
 const totalWords = arrWords.length;
@@ -131,7 +132,6 @@ function testingCard() {
     })
 }
 
-
 arrWords.forEach(item => {
     newWords.push({ value: item.english, type: 'word', id: item.english + item.translation });
     arrTranslation.push({ value: item.translation, type: 'translation', id: item.english + item.translation });
@@ -142,62 +142,11 @@ const shuffleTranslation = shuffleArray(arrTranslation);
 
 examination.addEventListener("click", testingCard);
 
-
-
-examCards.addEventListener("click", (event) => {
-    let firstCard = false;
-    const clickedCard = event.target;
-    startTimer();
-
-
-    if (firstCard || clickedCard.classList.contains('correct')) {
-        return
-    }
-
-    clickedCard.classList.add('correct');
-    firstCard = true;
-    clickedCard.classList.add('active');
-    selectedCards.push(clickedCard);
-
-    if (selectedCards.length === 2) {
-        const [card1, card2] = selectedCards;
-
-        if (card1.dataset.id === card2.dataset.id && card1.dataset.type !== card2.dataset.type) {
-            card1.classList.add('fade-out');
-            card2.classList.add('fade-out');
-            matchPairs++;
-            correctPercent.textContent = `${matchPairs}`;
-            updateProgress();
-            selectedCards = [];
-
-            if (matchPairs === arrWords.length) {
-                alert('Вы выйграли!');
-                stopTimer();
-            }
-        } else {
-            card2.classList.add('wrong');
-            setTimeout(() => {
-                card2.classList.remove('wrong');
-            }, 1000);
-            setTimeout(() => {
-                card1.classList.remove('active');
-                card2.classList.remove('active');
-                card1.classList.remove('correct');
-                card2.classList.remove('correct');
-            }, 500);
-            selectedCards = [];
-        }
-    }
-})
-
-
-
 const buttonShuffle = document.querySelector("#shuffle-words");
 
 buttonShuffle.addEventListener("click", shuffleCards);
 
 const timer = document.querySelector("#time");
-
 let seconds = 0;
 let minutes = 0;
 let timerInterval;
@@ -214,11 +163,53 @@ function updateTimer() {
     }
     const formateSeconds = String(seconds).padStart(2, '0');
     const formatMinutes = String(minutes).padStart(2, '0');
-
-
     timer.textContent = `${formatMinutes} : ${formateSeconds}`;
 }
 
 function stopTimer() {
     clearInterval(timerInterval);
 }
+
+
+
+examCards.addEventListener("click", (event) => {
+    startTimer();
+    let firstCard = false;
+    const clickedCard = event.target;
+    if (firstCard || clickedCard.classList.contains('correct')) {
+        return
+    }
+    clickedCard.classList.add('correct');
+    firstCard = true;
+    clickedCard.classList.add('active');
+    selectedCards.push(clickedCard);
+
+    if (selectedCards.length === 2) {
+        const [card1, card2] = selectedCards;
+        if (card1.dataset.id === card2.dataset.id && card1.dataset.type !== card2.dataset.type) {
+            card1.classList.add('fade-out');
+            card2.classList.add('fade-out');
+            matchPairs++;
+            correctPercent.textContent = `${matchPairs}`;
+            updateProgress();
+            selectedCards = [];
+
+            if (matchPairs === arrWords.length) {
+                alert('Вы выйграли!');
+            }
+
+        } else {
+            card2.classList.add('wrong');
+            setTimeout(() => {
+                card2.classList.remove('wrong');
+            }, 1000);
+            setTimeout(() => {
+                card1.classList.remove('active');
+                card2.classList.remove('active');
+                card1.classList.remove('correct');
+                card2.classList.remove('correct');
+            }, 500);
+            selectedCards = [];
+        }
+    }
+})
