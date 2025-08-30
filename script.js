@@ -97,8 +97,8 @@ function shuffleCards() {
 }
 
 
-let newWords = [];
-let arrTranslation = [];
+const newWords = [];
+const arrTranslation = [];
 let selectedCards = [];
 let matchPairs = 0;
 let correctAnswer = 0;
@@ -163,7 +163,7 @@ let minutes = 0;
 let timerInterval;
 
 function startTimer() {
-    timerInterval = setInterval(updateTimer, 1000);
+    timerInterval = setTimeout(updateTimer, 1000);
 }
 
 function updateTimer() {
@@ -178,9 +178,8 @@ function updateTimer() {
 }
 
 function stopTimer() {
-    clearInterval(timerInterval);
+    clearTimeout(timerInterval);
 }
-
 
 
 examCards.addEventListener("click", (event) => {
@@ -210,7 +209,10 @@ examCards.addEventListener("click", (event) => {
             selectedCards = [];
 
             if (matchPairs === arrWords.length) {
-                alert('Вы выйграли!');
+                stopTimer();
+                setTimeout(() => {
+                    alert('Вы выйграли!');
+                }, 1000);
             }
 
         } else {
