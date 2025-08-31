@@ -139,7 +139,6 @@ function testingCard() {
         translationCard.dataset.id = card.id;
         examCards.appendChild(translationCard);
     })
-
 }
 
 arrWords.forEach(item => {
@@ -151,6 +150,7 @@ const shuffleWords = shuffleArray(newWords);
 const shuffleTranslation = shuffleArray(arrTranslation);
 
 examination.addEventListener("click", testingCard);
+examination.addEventListener("click", startTimer);
 
 const buttonShuffle = document.querySelector("#shuffle-words");
 
@@ -162,8 +162,9 @@ let seconds = 0;
 let minutes = 0;
 let timerInterval;
 
+
 function startTimer() {
-    timerInterval = setTimeout(updateTimer, 1000);
+    timerInterval = setInterval(updateTimer, 1000);
 }
 
 function updateTimer() {
@@ -178,19 +179,19 @@ function updateTimer() {
 }
 
 function stopTimer() {
-    clearTimeout(timerInterval);
+    clearInterval(timerInterval);
 }
 
 
 examCards.addEventListener("click", (event) => {
     let correctCount = JSON.parse(localStorage.getItem('correctCardChoose')) || 0;
     let wrongCount = JSON.parse(localStorage.getItem('wrongCardChoose')) || 0;
-    startTimer();
     let firstCard = false;
     const clickedCard = event.target;
     if (firstCard || clickedCard.classList.contains('correct')) {
         return
     }
+
     clickedCard.classList.add('correct');
     firstCard = true;
     clickedCard.classList.add('active');
